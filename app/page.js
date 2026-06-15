@@ -83,21 +83,23 @@ export default function Home() {
     <main ref={containerRef} className="relative z-10 overflow-hidden">
       <SingularityHoldTrigger />
       <section id="home" data-nav-section="home" data-snap-section className="relative isolate h-[100dvh] w-full overflow-hidden px-[8vw] max-sm:px-5">
-        <div className="absolute inset-x-5 top-[clamp(5.25rem,15dvh,7rem)] max-w-[92vw] sm:top-[clamp(5.5rem,14dvh,7.25rem)] md:top-[clamp(6rem,13dvh,8rem)] md:max-w-3xl lg:inset-x-[8vw] lg:top-[56%] lg:max-w-4xl lg:-translate-y-1/2">
-          <h1 className="flex flex-col text-[clamp(3rem,14vw,5rem)] font-black leading-[0.9] tracking-tighter text-white drop-shadow-[0_22px_70px_rgba(255,255,255,0.18)] sm:text-6xl md:text-7xl lg:text-8xl">
- <span className="relative inline-block ">Nour Gamil</span>
- <span className="relative inline-block bg-clip-text text-transparent [background-image:var(--theme-gradient)] drop-shadow-[0_0_38px_color-mix(in_srgb,var(--theme-accent)_36%,transparent)]">
+        <div className="absolute left-1/2 top-[clamp(5.25rem,15dvh,7rem)] w-[min(92vw,42rem)] -translate-x-1/2 text-center sm:top-[clamp(5.5rem,14dvh,7.25rem)] md:top-[clamp(6rem,13dvh,8rem)] lg:left-[8vw] lg:top-[56%] lg:w-auto lg:max-w-4xl lg:translate-x-0 lg:-translate-y-1/2 lg:text-left">
+          <div className="hero-welcome-mark mb-3 flex items-center justify-center gap-3 lg:mb-5 lg:justify-start">
+            <span className="h-px w-10 rounded-full bg-gradient-to-r from-transparent via-[color:var(--theme-accent)] to-white/50 shadow-[0_0_20px_color-mix(in_srgb,var(--theme-accent)_42%,transparent)] sm:w-14" />
+            <span className="font-mono text-[9px] font-black uppercase tracking-[0.5em] text-white/75 sm:text-[10px] md:text-xs">
+              Welcome To
+            </span>
+            <span className="h-px w-10 rounded-full bg-gradient-to-l from-transparent via-[color:var(--theme-accent)] to-white/50 shadow-[0_0_20px_color-mix(in_srgb,var(--theme-accent)_42%,transparent)] sm:w-14 lg:hidden" />
+          </div>
+
+          <h1 className="mx-auto flex max-w-[22rem] flex-col items-center text-center font-black leading-[0.9] tracking-[-0.085em] text-white drop-shadow-[0_24px_80px_rgba(255,255,255,0.2)] sm:max-w-xl md:max-w-3xl lg:mx-0 lg:max-w-5xl lg:items-start lg:text-left lg:leading-[0.82]">
+            <span className="relative block text-[clamp(3.15rem,15vw,6.4rem)] text-white/95 [text-shadow:0_0_38px_rgba(255,255,255,0.28),0_10px_36px_rgba(0,0,0,0.75)] md:text-[clamp(5rem,11vw,8rem)] lg:text-[clamp(5.05rem,7.45vw,8.25rem)]">
+              My
+            </span>
+            <span className="relative mt-1 block bg-clip-text text-[clamp(3.65rem,16vw,7rem)] italic text-transparent [background-image:linear-gradient(110deg,#ffffff_0%,var(--theme-accent)_42%,var(--theme-color-c)_68%,#ffffff_100%)] drop-shadow-[0_0_46px_color-mix(in_srgb,var(--theme-accent)_45%,transparent)] md:mt-2 md:text-[clamp(5.55rem,11.4vw,8.55rem)] lg:-mt-3 lg:text-[clamp(5.85rem,8.05vw,9.05rem)]">
               Portfolio
             </span>
           </h1>
-
- <p className="relative mt-4 max-w-[18rem] text-sm font-semibold leading-relaxed text-white drop-shadow-[0_8px_30px_rgba(0,0,0,0.45)] sm:max-w-md sm:text-base md:mt-6 md:text-lg lg:mt-7">
-            I make creative magic using
-            <span className="font-black text-[#0070F3]"> Next.js, </span>
-            <span className="font-black text-[#0ae448]">GSAP, </span>
-            <span className="font-black text-[#903C4C]">Three.js, </span>
-            and <span className="font-black text-[#00bcff]">Tailwind.</span>
-          </p>
 
  <div className="relative mt-5 hidden lg:block lg:mt-10">
             <div onClick={scrollToProjects} className="magnetic-wrap inline-block cursor-pointer p-1 sm:p-2 md:p-10 md:-ml-10">
@@ -352,7 +354,7 @@ function SingularityHoldTrigger() {
       onPointerCancel={release}
       className="singularity-trigger group fixed left-1/2 top-1/2 z-[80] block h-36 w-36 -translate-x-1/2 -translate-y-1/2 cursor-grab select-none touch-none rounded-full bg-transparent sm:h-44 sm:w-44 lg:h-56 lg:w-56 active:cursor-grabbing"
     >
-      <span className="absolute bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-[color:var(--theme-border)] [background:var(--theme-panel-bg-strong)] px-4 py-2 text-[9px] font-black uppercase tracking-[0.28em] text-white shadow-[var(--theme-button-shadow)] backdrop-blur-md transition duration-300 group-hover:-translate-y-1 group-hover:border-[color:var(--theme-accent)]">
+      <span className="absolute bottom-0 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-[color:var(--theme-border)] [background:var(--theme-panel-bg-strong)] px-4 py-2 text-[9px] font-black uppercase tracking-[0.28em] text-white shadow-[var(--theme-button-shadow)] backdrop-blur-md transition duration-300 group-hover:-translate-y-1 group-hover:border-[color:var(--theme-accent)]">
         Click and Hold
       </span>
     </button>

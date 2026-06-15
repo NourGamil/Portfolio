@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollToPlugin } from "gsap/dist/ScrollToPlugin";
 
 import Skills from "./components/Skills";
@@ -23,7 +22,7 @@ function getVisibleProjectTarget() {
 }
 
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+  gsap.registerPlugin(ScrollToPlugin);
 }
 
 export default function Home() {
@@ -40,68 +39,6 @@ export default function Home() {
   };
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap
-        .timeline({ defaults: { ease: "power3.out" } })
-        .to(".fadeRight", { opacity: 1, x: 100, stagger: 0.09, duration: 0.95 })
-        .to(".fadeLeft", { opacity: 1, x: -100, duration: 0.95 }, "-=0.75")
-        .to(".fadeUp", { opacity: 1, y: -100, duration: 0.95 }, "-=0.75");
-
-      ScrollTrigger.create({
-        trigger: "#about",
-        start: "top 55%",
-        onEnter: () => {
-          gsap
-            .timeline({ defaults: { duration: 0.75, ease: "power3.inOut", overwrite: true } })
-            .to(".fadeRight", { opacity: 0, x: -70, stagger: 0.05 })
-            .to(".fadeLeft", { opacity: 0, x: 70 }, "<")
-            .to(".fadeUp", { opacity: 0, y: 70 }, "<");
-        },
-        onLeaveBack: () => {
-          gsap
-            .timeline({ defaults: { duration: 0.95, ease: "power3.out", overwrite: true } })
-            .to(".fadeRight", { opacity: 1, x: 100, stagger: 0.08 })
-            .to(".fadeLeft", { opacity: 1, x: -100 }, "<")
-            .to(".fadeUp", { opacity: 1, y: -100 }, "<");
-        },
-      });
-
-      gsap.utils.toArray(".content-section").forEach((section) => {
-        const fadeRights = section.querySelectorAll(".fadeRightAll");
-        const fadeLefts = section.querySelectorAll(".fadeLeftAll");
-        const fadeUps = section.querySelectorAll(".fadeUpAll");
-        const fadeScales = section.querySelectorAll(".fadeScaleAll");
-
-        const animateIn = () => {
-          gsap
-            .timeline({ defaults: { duration: 0.85, ease: "power3.out", overwrite: true } })
-            .to(fadeRights, { opacity: 1, x: 100, stagger: 0.07 })
-            .to(fadeLefts, { opacity: 1, x: -100, stagger: 0.07 }, "<")
-            .to(fadeUps, { opacity: 1, y: -100, stagger: 0.07 }, "<")
-            .to(fadeScales, { opacity: 1, scale: 1, stagger: 0.06 }, "<");
-        };
-
-        const animateOut = () => {
-          gsap
-            .timeline({ defaults: { duration: 0.55, ease: "power3.inOut", overwrite: true } })
-            .to(fadeRights, { opacity: 0, x: -70 })
-            .to(fadeLefts, { opacity: 0, x: 70 }, "<")
-            .to(fadeUps, { opacity: 0, y: 70 }, "<")
-            .to(fadeScales, { opacity: 0, scale: 0.94 }, "<");
-        };
-
-        ScrollTrigger.create({
-          trigger: section,
-          start: "top 72%",
-          end: "bottom 28%",
-          onEnter: animateIn,
-          onEnterBack: animateIn,
-          onLeave: animateOut,
-          onLeaveBack: animateOut,
-        });
-      });
-    }, containerRef);
-
     const magneticCleanups = gsap.utils.toArray(".magnetic-wrap").map((wrapper) => {
       const button = wrapper.querySelector(".cv-btn");
       if (!button) return () => {};
@@ -139,7 +76,6 @@ export default function Home() {
 
     return () => {
       magneticCleanups.forEach((cleanup) => cleanup());
-      ctx.revert();
     };
   }, []);
 
@@ -147,15 +83,15 @@ export default function Home() {
     <main ref={containerRef} className="relative z-10 overflow-hidden">
       <SingularityHoldTrigger />
       <section id="home" data-nav-section="home" data-snap-section className="relative isolate h-[100dvh] w-full overflow-hidden px-[8vw] max-sm:px-5">
-        <div className="absolute inset-x-5 bottom-10 max-w-[92vw] sm:bottom-14 md:bottom-20 md:max-w-3xl lg:inset-x-[8vw] lg:bottom-[150px] lg:max-w-4xl">
+        <div className="absolute inset-x-5 top-[57%] max-w-[92vw] -translate-y-1/2 sm:top-[58%] md:max-w-3xl lg:inset-x-[8vw] lg:top-[56%] lg:max-w-4xl">
           <h1 className="flex flex-col text-[clamp(3rem,14vw,5rem)] font-black leading-[0.9] tracking-tighter text-white drop-shadow-[0_22px_70px_rgba(255,255,255,0.18)] sm:text-6xl md:text-7xl lg:text-8xl">
-            <span className="fadeRight relative left-[-100px] inline-block opacity-0">Nour Gamil</span>
-            <span className="fadeRight relative left-[-100px] inline-block bg-clip-text text-transparent opacity-0 [background-image:var(--theme-gradient)] drop-shadow-[0_0_38px_color-mix(in_srgb,var(--theme-accent)_36%,transparent)]">
+ <span className="relative inline-block ">Nour Gamil</span>
+ <span className="relative inline-block bg-clip-text text-transparent [background-image:var(--theme-gradient)] drop-shadow-[0_0_38px_color-mix(in_srgb,var(--theme-accent)_36%,transparent)]">
               Portfolio
             </span>
           </h1>
 
-          <p className="fadeLeft relative right-[-100px] mt-4 max-w-[18rem] text-sm font-semibold leading-relaxed text-white opacity-0 drop-shadow-[0_8px_30px_rgba(0,0,0,0.45)] sm:max-w-md sm:text-base md:mt-7 md:text-lg">
+ <p className="relative mt-4 max-w-[18rem] text-sm font-semibold leading-relaxed text-white drop-shadow-[0_8px_30px_rgba(0,0,0,0.45)] sm:max-w-md sm:text-base md:mt-7 md:text-lg">
             I make creative magic using
             <span className="font-black text-[#0070F3]"> Next.js, </span>
             <span className="font-black text-[#0ae448]">GSAP, </span>
@@ -163,7 +99,7 @@ export default function Home() {
             and <span className="font-black text-[#00bcff]">Tailwind.</span>
           </p>
 
-          <div className="fadeUp relative bottom-[-100px] mt-5 opacity-0 md:mt-10">
+ <div className="relative mt-5 md:mt-10">
             <div onClick={scrollToProjects} className="magnetic-wrap inline-block cursor-pointer p-1 sm:p-2 md:p-10 md:-ml-10">
               <div className="cv-btn rounded-full border-2 border-[color:var(--theme-accent)] px-6 py-3 text-sm font-bold uppercase text-[color:var(--theme-accent)] transition-colors duration-300 hover:bg-[#004973] hover:text-white sm:px-8 sm:py-4 sm:text-lg md:px-12 md:py-6 md:text-xl">
                 Explore the Magic
@@ -176,11 +112,11 @@ export default function Home() {
       <section id="about" data-nav-section="about" data-snap-section className="content-section relative isolate h-[100dvh] w-full overflow-hidden px-[8vw] py-[clamp(4.75rem,8vh,6.5rem)] max-md:px-5 max-md:py-[5.35rem] max-sm:px-4 max-sm:py-[5.1rem]">
         <div className="grid h-full grid-cols-1 items-center gap-5 max-md:content-center max-md:items-center max-md:gap-5 lg:grid-cols-12 lg:gap-10">
           <div className="space-y-4 max-md:space-y-3 md:space-y-6 lg:col-span-7">
-            <h2 className="fadeRightAll relative left-[-100px] max-w-4xl text-[clamp(2.35rem,12vw,3.75rem)] font-black uppercase leading-[0.98] tracking-[-0.07em] text-white opacity-0 max-md:text-[2.15rem] max-md:leading-[0.94] max-md:tracking-[-0.06em] md:text-6xl xl:text-7xl">
+ <h2 className="relative max-w-4xl text-[clamp(2.35rem,12vw,3.75rem)] font-black uppercase leading-[0.98] tracking-[-0.07em] text-white max-md:text-[2.15rem] max-md:leading-[0.94] max-md:tracking-[-0.06em] md:text-6xl xl:text-7xl">
               Creating digital <span className="bg-clip-text text-transparent [background-image:var(--theme-gradient)]">poetry</span> through code.
             </h2>
 
-            <div className="fadeRightAll relative left-[-100px] rounded-[1.6rem] border border-[color:var(--theme-border)] [background:var(--theme-panel-bg)] p-4 opacity-0 [box-shadow:var(--theme-panel-shadow)] backdrop-blur-md max-md:rounded-[1.25rem] max-md:p-4 sm:rounded-[2rem] md:p-7 lg:p-8">
+ <div className="relative rounded-[1.6rem] border border-[color:var(--theme-border)] [background:var(--theme-panel-bg)] p-4 [box-shadow:var(--theme-panel-shadow)] backdrop-blur-md max-md:rounded-[1.25rem] max-md:p-4 sm:rounded-[2rem] md:p-7 lg:p-8">
               <p className="text-xs font-semibold leading-6 text-white max-md:text-[12px] max-md:leading-[1.65] sm:text-sm md:text-base md:leading-8 lg:text-lg">
                 I bridge the gap between complex 3D mathematics and clean UI design. Every pixel is intentional, every motion is calculated, and every section is shaped to feel alive without losing performance.
               </p>
@@ -198,7 +134,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="fadeLeftAll relative left-[100px] flex justify-center opacity-0 max-md:mt-2 md:flex lg:col-span-5">
+ <div className="relative flex justify-center max-md:mt-2 md:flex lg:col-span-5">
             <div
               className="w-full max-w-[280px] cursor-pointer max-md:max-w-[205px] md:max-w-[340px]"
               style={{ perspective: "1200px" }}
@@ -406,7 +342,7 @@ function SingularityHoldTrigger() {
       onPointerDown={hold}
       onPointerUp={release}
       onPointerCancel={release}
-      className="singularity-trigger group fixed right-1/2 top-[34vh] z-[80] h-40 w-40 -translate-y-1/2 translate-x-1/2 cursor-grab select-none rounded-full bg-transparent sm:h-48 sm:w-48 lg:right-[500px] lg:top-1/2 lg:h-56 lg:w-56 active:cursor-grabbing"
+      className="singularity-trigger group fixed right-1/2 top-[34vh] z-[80] h-40 w-40 -translate-y-1/2 translate-x-1/2 cursor-grab select-none touch-none rounded-full bg-transparent sm:h-48 sm:w-48 lg:right-[500px] lg:top-1/2 lg:h-56 lg:w-56 active:cursor-grabbing"
     >
       <span className="absolute bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-[color:var(--theme-border)] [background:var(--theme-panel-bg-strong)] px-4 py-2 text-[9px] font-black uppercase tracking-[0.28em] text-white shadow-[var(--theme-button-shadow)] backdrop-blur-md transition duration-300 group-hover:-translate-y-1 group-hover:border-[color:var(--theme-accent)]">
         Click and Hold
@@ -451,9 +387,9 @@ function createSingularityAudio() {
     const data = buffer.getChannelData(0);
 
     for (let i = 0; i < length; i += 1) {
-      const fade = 1 - i / length;
+ const fade = 1 - i / length;
       const crackle = Math.random() > 0.985 ? (Math.random() * 2 - 1) * 2.4 : 0;
-      data[i] = (Math.random() * 2 - 1) * (0.55 + fade * 0.75) + crackle;
+ data[i] = (Math.random() * 2 - 1) * (0.55 + fade * 0.75) + crackle;
     }
 
     return buffer;
@@ -690,7 +626,7 @@ function ProjectCard({ project }) {
     >
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         {project.img ? (
-          <img src={asset(project.img)} alt={project.title} className="h-full w-full object-cover transition duration-1000 group-hover:scale-110" />
+          <img src={project.img} alt={project.title} className="h-full w-full object-cover transition duration-1000 group-hover:scale-110" />
         ) : (
           <div className="h-full w-full [background:var(--theme-gradient-soft)]" />
         )}

@@ -61,7 +61,7 @@ export const projectsData = [
     category: "3D Commerce",
     description:
       "Interactive shoe retail experience with 3D product motion, expressive scrolling, and a cinematic shopping flow.",
-    img: "/images/Shoe-Show.webp",
+    img: "images/Shoe-Show.webp",
     githubLink: "https://github.com/nourgamil/Sonic-Sneak",
     websiteLink: "https://nourgamil.github.io/Sonic-Sneak/",
     accent: "#0070f3",
@@ -72,7 +72,7 @@ export const projectsData = [
     category: "Automotive UI",
     description:
       "Luxury automotive landing page built around bold product framing, deep contrast, and premium motion rhythm.",
-    img: "/images/Cars-Lambo.webp",
+    img: "images/Cars-Lambo.webp",
     githubLink: "https://github.com/nourgamil/Velocity/",
     websiteLink: "https://nourgamil.github.io/Velocity/",
     accent: "#ff2d20",
@@ -83,7 +83,7 @@ export const projectsData = [
     category: "Travel Experience",
     description:
       "A destination-driven travel interface with smooth transitions, large visual moments, and exploration-focused content.",
-    img: "/images/Globe-Trotter.webp",
+    img: "images/Globe-Trotter.webp",
     githubLink: "https://github.com/nourgamil/Globe-Trotter",
     websiteLink: "https://nourgamil.github.io/Globe-Trotter/",
     accent: "#0ae448",
@@ -94,7 +94,7 @@ export const projectsData = [
     category: "Sneaker Store",
     description:
       "Premium sneaker storefront with curated collections, product filtering, quick-view flow, and cart interactions.",
-    img: "/images/SoleAura.webp",
+    img: "images/SoleAura.webp",
     githubLink: "https://github.com/NourGamil/SoulAura",
     websiteLink: "https://nourgamil.github.io/SoulAura/",
     accent: "#fdc700",
@@ -105,7 +105,7 @@ export const projectsData = [
     category: "Restaurant Brand",
     description:
       "Warm restaurant website with refined menu presentation, polished sections, and a premium dining atmosphere.",
-    img: "/images/Bunora.webp",
+    img: "images/Bunora.webp",
     githubLink: "https://github.com/NourGamil/Bunora",
     websiteLink: "https://nourgamil.github.io/Bunora/",
     accent: "#fdc700",
@@ -116,7 +116,7 @@ export const projectsData = [
     category: "Fitness Studio",
     description:
       "High-energy fitness platform with program highlights, training content, bold contrast, and strong brand movement.",
-    img: "/images/FitForge.webp",
+    img: "images/FitForge.webp",
     githubLink: "https://github.com/NourGamil/FitForge",
     websiteLink: "https://nourgamil.github.io/FitForge/",
     accent: "#0ae448",
@@ -127,7 +127,7 @@ export const projectsData = [
     category: "Learning Platform",
     description:
       "Modern education website with course discovery, mentor sections, learning benefits, and a student-first feel.",
-    img: "/images/Eduvanta.webp",
+    img: "images/Eduvanta.webp",
     githubLink: "https://github.com/NourGamil/EduVanta",
     websiteLink: "https://nourgamil.github.io/EduVanta/",
     accent: "#004973",
@@ -138,7 +138,7 @@ export const projectsData = [
     category: "Floral Boutique",
     description:
       "Elegant flower boutique experience with editorial layouts, gallery moments, and soft luxury visuals.",
-    img: "/images/Fiore.webp",
+    img: "images/Fiore.webp",
     githubLink: "https://github.com/NourGamil/Fiore",
     websiteLink: "https://nourgamil.github.io/Fiore/",
     accent: "#fdc700",
@@ -156,5 +156,6 @@ export function asset(path = "") {
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
   if (!path) return "";
   if (path.startsWith("http")) return path;
-  return `${basePath}${path.startsWith("/") ? path : `/${path}`}`;
+  if (basePath) return `${basePath}${path.startsWith("/") ? path : `/${path}`}`;
+  return path.startsWith("/") ? path.slice(1) : path;
 }

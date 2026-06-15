@@ -12,10 +12,10 @@ export default function Footer() {
     >
       <div className="relative z-10 my-auto grid w-full grid-cols-1 items-center gap-5 max-md:my-auto max-md:items-center max-md:gap-3 sm:gap-6 lg:grid-cols-2 lg:gap-14 xl:gap-20">
         <div className="min-w-0">
-          <h2 className="fadeRightAll relative left-[-100px] text-[clamp(3.2rem,17vw,5.7rem)] font-black uppercase leading-[0.88] tracking-[-0.08em] opacity-0 max-md:text-[2.5rem] md:text-8xl">
+ <h2 className="relative text-[clamp(3.2rem,17vw,5.7rem)] font-black uppercase leading-[0.88] tracking-[-0.08em] max-md:text-[2.5rem] md:text-8xl">
             Let's <span className="bg-clip-text text-transparent [background-image:var(--theme-gradient)]">talk.</span>
           </h2>
-          <p className="fadeRightAll relative left-[-100px] mt-3 max-w-xl font-mono text-[9px] font-black uppercase tracking-[0.22em] text-white opacity-0 max-md:mt-2 max-md:text-[7.5px] max-md:tracking-[0.16em] sm:text-[10px] md:mt-6 md:text-sm">
+ <p className="relative mt-3 max-w-xl font-mono text-[9px] font-black uppercase tracking-[0.22em] text-white max-md:mt-2 max-md:text-[7.5px] max-md:tracking-[0.16em] sm:text-[10px] md:mt-6 md:text-sm">
             Available for new masterpieces. Based in Egypt.
           </p>
 
@@ -23,7 +23,7 @@ export default function Footer() {
             action={`mailto:${profile.email}?subject=Masterpiece Inquiry`}
             method="post"
             encType="text/plain"
-            className="fadeRightAll relative left-[-100px] mt-5 max-w-md opacity-0 max-md:mt-3 sm:block md:mt-10"
+ className="relative mt-5 max-w-md max-md:mt-3 sm:block md:mt-10"
           >
             <div className="relative rounded-[1.6rem] border border-[color:var(--theme-border)] [background:var(--theme-panel-bg)] p-2 [box-shadow:var(--theme-panel-shadow)] backdrop-blur-md max-md:rounded-[1.15rem] max-md:p-1.5">
               <input
@@ -44,19 +44,19 @@ export default function Footer() {
         </div>
 
         <div className="grid grid-cols-1 gap-3 max-md:grid-cols-2 max-md:gap-2 sm:grid-cols-2 sm:gap-5 md:gap-7">
-          <div className="fadeLeftAll relative left-[100px] rounded-[1.45rem] border border-[color:var(--theme-border)] [background:var(--theme-panel-bg)] p-4 opacity-0 [box-shadow:var(--theme-panel-shadow)] backdrop-blur-md max-md:rounded-[1rem] max-md:p-2.5 sm:rounded-[2rem] md:p-7">
+ <div className="relative rounded-[1.45rem] border border-[color:var(--theme-border)] [background:var(--theme-panel-bg)] p-4 [box-shadow:var(--theme-panel-shadow)] backdrop-blur-md max-md:rounded-[1rem] max-md:p-2.5 sm:rounded-[2rem] md:p-7">
             <h4 className="mb-4 text-[10px] font-black uppercase tracking-[0.38em] text-[color:var(--theme-accent)] max-md:mb-2 max-md:text-[8px] max-md:tracking-[0.24em]">Direct</h4>
             <p className="break-all font-mono text-xs font-bold text-white max-md:text-[9px] md:text-sm">{profile.email}</p>
             <p className="mt-3 font-mono text-xs font-bold text-white max-md:mt-1.5 max-md:text-[9px] md:text-sm">{profile.phone}</p>
           </div>
 
-          <div className="fadeLeftAll relative left-[100px] block rounded-[1.45rem] border border-[color:var(--theme-border)] [background:var(--theme-panel-bg)] p-4 opacity-0 [box-shadow:var(--theme-panel-shadow)] backdrop-blur-md max-md:rounded-[1rem] max-md:p-2.5 md:rounded-[2rem] md:p-7">
+ <div className="relative block rounded-[1.45rem] border border-[color:var(--theme-border)] [background:var(--theme-panel-bg)] p-4 [box-shadow:var(--theme-panel-shadow)] backdrop-blur-md max-md:rounded-[1rem] max-md:p-2.5 md:rounded-[2rem] md:p-7">
             <h4 className="mb-4 text-[10px] font-black uppercase tracking-[0.38em] text-[color:var(--theme-accent)] max-md:mb-2 max-md:text-[8px] max-md:tracking-[0.24em]">Location</h4>
             <p className="font-mono text-xs font-bold text-white max-md:text-[9px] md:text-sm">{profile.location}</p>
             <p className="mt-3 font-mono text-xs font-bold text-white max-md:mt-1.5 max-md:text-[9px] md:text-sm">GMT+3 / Remote</p>
           </div>
 
-          <div className="fadeUpAll relative top-[100px] rounded-[1.45rem] border border-[color:var(--theme-border)] [background:var(--theme-panel-bg-strong)] p-4 opacity-0 [box-shadow:var(--theme-panel-shadow)] backdrop-blur-md max-md:col-span-2 max-md:rounded-[1rem] max-md:p-2.5 sm:col-span-2 sm:rounded-[2rem] md:p-7">
+ <div className="relative rounded-[1.45rem] border border-[color:var(--theme-border)] [background:var(--theme-panel-bg-strong)] p-4 [box-shadow:var(--theme-panel-shadow)] backdrop-blur-md max-md:col-span-2 max-md:rounded-[1rem] max-md:p-2.5 sm:col-span-2 sm:rounded-[2rem] md:p-7">
             <h4 className="mb-3 text-[10px] font-black uppercase tracking-[0.38em] text-[color:var(--theme-accent)] max-md:mb-2 max-md:text-[8px] max-md:tracking-[0.24em]">Digital Footprint</h4>
             <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 max-md:gap-x-2 sm:grid-cols-2 sm:gap-x-5">
               {socials.map((social) => (
@@ -67,7 +67,7 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="fadeUpAll relative top-[100px] z-10 flex w-full flex-col items-end justify-between gap-2 border-t border-white/10 pt-4 font-mono text-[7px] font-black uppercase tracking-[0.22em] text-white opacity-0 max-md:pt-2 max-md:text-[6.5px] max-md:tracking-[0.16em] sm:flex-row sm:items-center md:text-[10px]">
+ <div className="relative z-10 flex w-full flex-col items-end justify-between gap-2 border-t border-white/10 pt-4 font-mono text-[7px] font-black uppercase tracking-[0.22em] text-white max-md:pt-2 max-md:text-[6.5px] max-md:tracking-[0.16em] sm:flex-row sm:items-center md:text-[10px]">
         <p className="lg:pl-[6rem]">© 2026 NOUR GAMIL. ALL RIGHTS RESERVED.</p>
         <p className="bg-clip-text text-transparent [background-image:var(--theme-gradient)]">Designed to be a masterpiece</p>
       </div>

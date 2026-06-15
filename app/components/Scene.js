@@ -418,18 +418,19 @@ function getBlackHoleAnchor({ viewport, size }) {
 function SectionTracker({ inputRef }) {
   useEffect(() => {
     let frame = 0;
-    let lastIndex = 0;
+    let settleTimer = 0;
+    let lastIndex = inputRef.current.sectionIndex || 0;
+    let pendingIndex = lastIndex;
     let lastScroll = window.scrollY || 0;
 
-    const update = () => {
-      frame = 0;
+    const findClosestSectionIndex = () => {
       const visibleSections = Array.from(document.querySelectorAll("[data-snap-section]")).filter((section) => {
         const rect = section.getBoundingClientRect();
         const style = window.getComputedStyle(section);
         return style.display !== "none" && style.visibility !== "hidden" && rect.width > 1 && rect.height > 1;
       });
       const viewportCenter = window.innerHeight / 2;
-      let closestIndex = 0;
+      let closestIndex = lastIndex;
       let closestDistance = Infinity;
 
       visibleSections.forEach((section) => {
@@ -445,26 +446,70 @@ function SectionTracker({ inputRef }) {
         }
       });
 
-      if (closestIndex !== lastIndex) {
-        lastIndex = closestIndex;
-        inputRef.current.sectionIndex = closestIndex;
+      return closestIndex;
+    };
+
+    const commitTitleIndex = (nextIndex) => {
+      pendingIndex = nextIndex;
+      inputRef.current.pendingSectionIndex = nextIndex;
+      inputRef.current.isTitleWaitingForScrollStop = 0;
+
+      if (nextIndex !== lastIndex) {
+        lastIndex = nextIndex;
+        inputRef.current.sectionIndex = nextIndex;
         inputRef.current.scatterPower = 1;
         inputRef.current.colorPulse = 1;
       }
+
+      if (nextIndex !== 0 && inputRef.current.singularityTarget > 0) {
+        inputRef.current.singularityTarget = 0;
+        inputRef.current.singularityHoldAge = 0;
+      }
+    };
+
+    const update = ({ commit = false } = {}) => {
+      frame = 0;
+      const closestIndex = findClosestSectionIndex();
+      pendingIndex = closestIndex;
+      inputRef.current.pendingSectionIndex = closestIndex;
+
+      const currentScroll = window.scrollY || 0;
+      inputRef.current.scrollVelocity = THREE.MathUtils.clamp((currentScroll - lastScroll) * 0.014, -2.2, 2.2);
+      lastScroll = currentScroll;
+
+      if (commit) {
+        commitTitleIndex(closestIndex);
+        return;
+      }
+
+      const titleIsAlreadyCorrect = closestIndex === lastIndex && !inputRef.current.isTitleWaitingForScrollStop;
+      if (titleIsAlreadyCorrect) {
+        inputRef.current.isTitleWaitingForScrollStop = 0;
+        return;
+      }
+
+      inputRef.current.isTitleWaitingForScrollStop = 1;
+      inputRef.current.scatterPower = Math.max(inputRef.current.scatterPower || 0, 1);
 
       if (closestIndex !== 0 && inputRef.current.singularityTarget > 0) {
         inputRef.current.singularityTarget = 0;
         inputRef.current.singularityHoldAge = 0;
       }
-
-      const currentScroll = window.scrollY || 0;
-      inputRef.current.scrollVelocity = THREE.MathUtils.clamp((currentScroll - lastScroll) * 0.014, -2.2, 2.2);
-      lastScroll = currentScroll;
     };
 
     const requestUpdate = () => {
-      if (frame) return;
-      frame = window.requestAnimationFrame(update);
+      if (!frame) {
+        frame = window.requestAnimationFrame(() => update({ commit: false }));
+      }
+
+      if (settleTimer) window.clearTimeout(settleTimer);
+      settleTimer = window.setTimeout(() => {
+        if (frame) {
+          window.cancelAnimationFrame(frame);
+          frame = 0;
+        }
+        update({ commit: true });
+      }, 260);
     };
 
     const handleSingularityHold = (event) => {
@@ -479,7 +524,7 @@ function SectionTracker({ inputRef }) {
       inputRef.current.explosion = 1;
     };
 
-    update();
+    update({ commit: true });
     window.addEventListener("scroll", requestUpdate, { passive: true });
     window.addEventListener("resize", requestUpdate);
     window.addEventListener("portfolio-singularity-hold", handleSingularityHold);
@@ -487,6 +532,7 @@ function SectionTracker({ inputRef }) {
 
     return () => {
       if (frame) window.cancelAnimationFrame(frame);
+      if (settleTimer) window.clearTimeout(settleTimer);
       window.removeEventListener("scroll", requestUpdate);
       window.removeEventListener("resize", requestUpdate);
       window.removeEventListener("portfolio-singularity-hold", handleSingularityHold);
@@ -518,9 +564,14 @@ function SectionTracker({ inputRef }) {
     const dt = Math.min(delta || 0.016, 0.033);
     inputRef.current.mouse.x = THREE.MathUtils.lerp(inputRef.current.mouse.x, inputRef.current.targetMouse.x, 0.055);
     inputRef.current.mouse.y = THREE.MathUtils.lerp(inputRef.current.mouse.y, inputRef.current.targetMouse.y, 0.055);
-    inputRef.current.scatterPower = THREE.MathUtils.lerp(inputRef.current.scatterPower, 0, 0.018);
+    const scatterTarget = inputRef.current.isTitleWaitingForScrollStop ? 1 : 0;
+    inputRef.current.scatterPower = THREE.MathUtils.lerp(
+      inputRef.current.scatterPower,
+      scatterTarget,
+      inputRef.current.isTitleWaitingForScrollStop ? 0.18 : 0.085
+    );
     inputRef.current.scrollVelocity = THREE.MathUtils.lerp(inputRef.current.scrollVelocity, 0, 0.035);
-    inputRef.current.colorPulse = THREE.MathUtils.lerp(inputRef.current.colorPulse, 0, 0.022);
+    inputRef.current.colorPulse = THREE.MathUtils.lerp(inputRef.current.colorPulse, 0, 0.06);
 
     if (inputRef.current.singularityTarget > 0) {
       inputRef.current.singularityHoldAge = Math.min(1, (inputRef.current.singularityHoldAge || 0) + dt * 0.34);
@@ -940,6 +991,11 @@ function HeroMagicPoints({ inputRef }) {
     visualGroup.visible = form > 0.015;
 
     if (accretion) {
+      const diskOrbitRadius = (isDesktop ? 0.13 : 0.075) * form * (1 - explosion * 0.5);
+      const diskOrbitAngle = time * 0.42;
+      accretion.position.set(Math.cos(diskOrbitAngle) * diskOrbitRadius, 0, Math.sin(diskOrbitAngle) * diskOrbitRadius);
+      accretion.rotation.x = 0;
+      accretion.rotation.y = 0;
       accretion.rotation.z = 0;
       accretion.scale.set(isDesktop ? 4.25 : 2.45, isDesktop ? 1.34 : 0.76, 1);
       accretion.material.opacity = 0.9 * form * (1 - explosion * 0.45);
@@ -1098,8 +1154,7 @@ function ParticleTitles({ inputRef }) {
     const colorB = new THREE.Color(section.colorB);
     const time = state.clock.elapsedTime;
     const transitionPower = input.scatterPower;
-    const velocityPower = Math.min(Math.abs(input.scrollVelocity), 1.9);
-    const centerMix = THREE.MathUtils.smoothstep(transitionPower, 0.12, 0.76);
+    const centerMix = THREE.MathUtils.smoothstep(transitionPower, 0.08, 0.62);
     const titleMix = 1 - centerMix;
     const mousePushX = input.mouse.x * 0.09;
     const mousePushY = input.mouse.y * 0.065;
@@ -1110,15 +1165,11 @@ function ParticleTitles({ inputRef }) {
     for (let i = 0; i < TITLE_DOT_COUNT; i += 1) {
       const index = i * 3;
       const phase = random(i + 41) * Math.PI * 2;
-      const spinRadius = 0.16 + random(i + 2) * 1.25;
-      const spinHeight = (random(i + 5) - 0.5) * 0.78;
-      const spinSpeed = 0.55 + random(i + 7) * 0.9 + velocityPower * 0.12;
-      const spinAngle = time * spinSpeed + phase * 0.72 + input.sectionIndex * 0.35;
-      const centerX = Math.cos(spinAngle) * spinRadius;
-      const centerY = Math.sin(spinAngle * 0.92) * spinRadius * 0.28 + spinHeight;
-      const centerZ = Math.sin(spinAngle * 0.62) * (0.45 + random(i + 9) * 0.35);
-      const aliveX = Math.sin(time * 0.56 + phase) * 0.004;
-      const aliveY = Math.cos(time * 0.52 + phase) * 0.004;
+      const centerX = (random(i + 2) - 0.5) * 4.3 + Math.sin(time * 0.8 + phase) * 0.018;
+      const centerY = (random(i + 5) - 0.5) * 2.25 + Math.cos(time * 0.72 + phase) * 0.012;
+      const centerZ = (random(i + 9) - 0.5) * 1.25;
+      const aliveX = Math.sin(time * 0.56 + phase) * 0.003;
+      const aliveY = Math.cos(time * 0.52 + phase) * 0.003;
       const titleX = target[index] * mobileTitleScale + anchor.x + aliveX;
       const titleY = target[index + 1] * mobileTitleScale + anchor.y + aliveY;
       const titleZ = target[index + 2];
@@ -1147,7 +1198,7 @@ function ParticleTitles({ inputRef }) {
       const finalTx = tx * (1 - explosion) + blastX * explosion;
       const finalTy = ty * (1 - explosion) + blastY * explosion;
       const finalTz = tz * (1 - explosion) + blastZ * explosion;
-      const speed = explosion > 0.02 ? 0.2 : singularity > 0.02 ? 0.04 + singularityOrbit * 0.034 + singularityAbsorb * 0.09 : 0.026 + random(i + 11) * 0.026 + centerMix * 0.025;
+      const speed = explosion > 0.02 ? 0.2 : singularity > 0.02 ? 0.045 + singularityOrbit * 0.04 + singularityAbsorb * 0.1 : 0.07 + random(i + 11) * 0.018 + centerMix * 0.045;
 
       positions[index] += (finalTx - positions[index]) * speed;
       positions[index + 1] += (finalTy - positions[index + 1]) * speed;
@@ -1218,6 +1269,8 @@ function ParticleTitles({ inputRef }) {
 function SceneStage() {
   const inputRef = useRef({
     sectionIndex: 0,
+    pendingSectionIndex: 0,
+    isTitleWaitingForScrollStop: 0,
     scatterPower: 1,
     scrollVelocity: 0,
     colorPulse: 1,
@@ -1256,7 +1309,7 @@ export default function Scene() {
     <div className="pointer-events-none fixed inset-0 z-0">
       <Canvas
         camera={{ position: [0, 0, 6.4], fov: 48 }}
-        dpr={[1, 1.35]}
+        dpr={[1, 1.15]}
         gl={{ alpha: false, antialias: false, powerPreference: "high-performance" }}
       >
         <color attach="background" args={["#020711"]} />

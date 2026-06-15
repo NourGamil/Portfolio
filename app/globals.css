@@ -286,3 +286,9 @@ body.loader-lock {
     background-size: 86px 86px, 142px 142px, 60px 60px;
   }
 }
+
+.singularity-trigger {
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}

@@ -94,7 +94,6 @@ export default function Navbar() {
         >
           <span className="relative grid h-11 w-11 place-items-center rounded-2xl lg:h-12 lg:w-12 border border-[color:var(--theme-border)] [background:var(--theme-gradient-soft)] [box-shadow:inset_0_0_26px_rgba(255,255,255,0.08),0_0_42px_var(--theme-color-a)] max-md:h-9 max-md:w-9 max-md:rounded-xl">
             <span className="absolute inset-1 rounded-xl border border-[color:var(--theme-color-a)] transition duration-500 group-hover:rotate-45 group-hover:border-[color:var(--theme-color-c)]" />
-            <span className="absolute h-2 w-2 rounded-full [background:var(--theme-color-c)] [box-shadow:0_0_18px_var(--theme-color-c)]" />
             <span className="relative text-sm font-black tracking-[-0.12em] text-[#eaf6ff] max-md:text-[11px]">NG</span>
           </span>
 

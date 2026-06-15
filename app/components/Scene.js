@@ -403,14 +403,10 @@ function getTitleAnchor({ bounds, viewport, size }) {
   };
 }
 
-function getBlackHoleAnchor({ viewport, size }) {
-  const isDesktop = size.width >= DESKTOP_BREAKPOINT;
-  const rightPixels = 500;
-  const rightOffset = (rightPixels / Math.max(1, size.width)) * viewport.width;
-
+function getBlackHoleAnchor() {
   return {
-    x: isDesktop ? viewport.width / 2 - rightOffset : 0,
-    y: isDesktop ? 0 : viewport.height * 0.18,
+    x: 0,
+    y: 0,
     z: 0,
   };
 }
@@ -449,10 +445,15 @@ function SectionTracker({ inputRef }) {
       return closestIndex;
     };
 
+    const setTitleAbsorbingClass = (active) => {
+      document.body.classList.toggle("title-absorbing", active);
+    };
+
     const commitTitleIndex = (nextIndex) => {
       pendingIndex = nextIndex;
       inputRef.current.pendingSectionIndex = nextIndex;
       inputRef.current.isTitleWaitingForScrollStop = 0;
+      setTitleAbsorbingClass(false);
 
       if (nextIndex !== lastIndex) {
         lastIndex = nextIndex;
@@ -485,10 +486,12 @@ function SectionTracker({ inputRef }) {
       const titleIsAlreadyCorrect = closestIndex === lastIndex && !inputRef.current.isTitleWaitingForScrollStop;
       if (titleIsAlreadyCorrect) {
         inputRef.current.isTitleWaitingForScrollStop = 0;
+        setTitleAbsorbingClass(false);
         return;
       }
 
       inputRef.current.isTitleWaitingForScrollStop = 1;
+      setTitleAbsorbingClass(true);
       inputRef.current.scatterPower = Math.max(inputRef.current.scatterPower || 0, 1);
 
       if (closestIndex !== 0 && inputRef.current.singularityTarget > 0) {
@@ -533,6 +536,7 @@ function SectionTracker({ inputRef }) {
     return () => {
       if (frame) window.cancelAnimationFrame(frame);
       if (settleTimer) window.clearTimeout(settleTimer);
+      document.body.classList.remove("title-absorbing");
       window.removeEventListener("scroll", requestUpdate);
       window.removeEventListener("resize", requestUpdate);
       window.removeEventListener("portfolio-singularity-hold", handleSingularityHold);
@@ -904,8 +908,8 @@ function HeroMagicPoints({ inputRef }) {
 
     const input = inputRef.current;
     const time = state.clock.elapsedTime;
-    const targetForm = input.sectionIndex === 0 ? 1 : 0;
-    formRef.current = THREE.MathUtils.lerp(formRef.current, targetForm, targetForm ? 0.048 : 0.12);
+    const targetForm = 1;
+    formRef.current = THREE.MathUtils.lerp(formRef.current, targetForm, 0.048);
     const form = THREE.MathUtils.smoothstep(formRef.current, 0, 1);
     const scatterPower = 1 - form;
     const positions = geometryRef.attributes.position.array;
@@ -991,14 +995,12 @@ function HeroMagicPoints({ inputRef }) {
     visualGroup.visible = form > 0.015;
 
     if (accretion) {
-      const diskOrbitRadius = (isDesktop ? 0.13 : 0.075) * form * (1 - explosion * 0.5);
-      const diskOrbitAngle = time * 0.42;
-      accretion.position.set(Math.cos(diskOrbitAngle) * diskOrbitRadius, 0, Math.sin(diskOrbitAngle) * diskOrbitRadius);
+      accretion.position.set(0, 0, 0);
       accretion.rotation.x = 0;
       accretion.rotation.y = 0;
       accretion.rotation.z = 0;
-      accretion.scale.set(isDesktop ? 4.25 : 2.45, isDesktop ? 1.34 : 0.76, 1);
-      accretion.material.opacity = 0.9 * form * (1 - explosion * 0.45);
+      accretion.scale.set(isDesktop ? 4.05 : 2.32, isDesktop ? 1.18 : 0.68, 1);
+      accretion.material.opacity = 0.78 * form * (1 - explosion * 0.45);
     }
 
     if (halo) {
@@ -1154,10 +1156,10 @@ function ParticleTitles({ inputRef }) {
     const colorB = new THREE.Color(section.colorB);
     const time = state.clock.elapsedTime;
     const transitionPower = input.scatterPower;
-    const centerMix = THREE.MathUtils.smoothstep(transitionPower, 0.08, 0.62);
-    const titleMix = 1 - centerMix;
-    const mousePushX = input.mouse.x * 0.09;
-    const mousePushY = input.mouse.y * 0.065;
+    const transitionMix = THREE.MathUtils.smoothstep(transitionPower, 0.08, 0.68);
+    const titleMix = 1 - transitionMix;
+    const mousePushX = input.mouse.x * 0.09 * titleMix;
+    const mousePushY = input.mouse.y * 0.065 * titleMix;
     const singularity = input.singularity || 0;
     const explosion = input.explosion || 0;
     const blackHoleAnchor = getBlackHoleAnchor({ viewport, size });
@@ -1165,18 +1167,20 @@ function ParticleTitles({ inputRef }) {
     for (let i = 0; i < TITLE_DOT_COUNT; i += 1) {
       const index = i * 3;
       const phase = random(i + 41) * Math.PI * 2;
-      const centerX = (random(i + 2) - 0.5) * 4.3 + Math.sin(time * 0.8 + phase) * 0.018;
-      const centerY = (random(i + 5) - 0.5) * 2.25 + Math.cos(time * 0.72 + phase) * 0.012;
-      const centerZ = (random(i + 9) - 0.5) * 1.25;
-      const aliveX = Math.sin(time * 0.56 + phase) * 0.003;
-      const aliveY = Math.cos(time * 0.52 + phase) * 0.003;
+      const aliveX = Math.sin(time * 0.56 + phase) * 0.003 * titleMix;
+      const aliveY = Math.cos(time * 0.52 + phase) * 0.003 * titleMix;
       const titleX = target[index] * mobileTitleScale + anchor.x + aliveX;
       const titleY = target[index + 1] * mobileTitleScale + anchor.y + aliveY;
       const titleZ = target[index + 2];
-
-      const baseTx = titleX * titleMix + centerX * centerMix + mousePushX;
-      const baseTy = titleY * titleMix + centerY * centerMix + mousePushY;
-      const baseTz = titleZ * titleMix + centerZ * centerMix;
+      const transitionAngle = time * (2.15 + random(i + 6100) * 1.15) + phase;
+      const transitionDepth = random(i + 6200) - 0.5;
+      const transitionRadius = (0.025 + random(i + 6300) * 0.18) * (1 - transitionMix * 0.48);
+      const absorbedTitleX = blackHoleAnchor.x + Math.cos(transitionAngle) * transitionRadius * 0.75;
+      const absorbedTitleY = blackHoleAnchor.y + Math.sin(transitionAngle * 0.72) * transitionRadius * 0.42;
+      const absorbedTitleZ = blackHoleAnchor.z + transitionDepth * 0.22 * (1 - transitionMix * 0.35);
+      const baseTx = titleX * titleMix + absorbedTitleX * transitionMix + mousePushX;
+      const baseTy = titleY * titleMix + absorbedTitleY * transitionMix + mousePushY;
+      const baseTz = titleZ * titleMix + absorbedTitleZ * transitionMix;
       const singularityOrbit = THREE.MathUtils.smoothstep(singularity, 0.04, 0.52);
       const singularityAbsorb = THREE.MathUtils.smoothstep(singularity, 0.54, 0.99);
       const singularityAngle = time * (1.8 + singularityOrbit * 3.6 + random(i + 8300) * 1.3) + phase;
@@ -1198,7 +1202,7 @@ function ParticleTitles({ inputRef }) {
       const finalTx = tx * (1 - explosion) + blastX * explosion;
       const finalTy = ty * (1 - explosion) + blastY * explosion;
       const finalTz = tz * (1 - explosion) + blastZ * explosion;
-      const speed = explosion > 0.02 ? 0.2 : singularity > 0.02 ? 0.045 + singularityOrbit * 0.04 + singularityAbsorb * 0.1 : 0.07 + random(i + 11) * 0.018 + centerMix * 0.045;
+      const speed = explosion > 0.02 ? 0.2 : singularity > 0.02 ? 0.045 + singularityOrbit * 0.04 + singularityAbsorb * 0.1 : 0.07 + random(i + 11) * 0.018 + transitionMix * 0.06;
 
       positions[index] += (finalTx - positions[index]) * speed;
       positions[index + 1] += (finalTy - positions[index + 1]) * speed;
@@ -1228,7 +1232,7 @@ function ParticleTitles({ inputRef }) {
     geometryRef.attributes.color.needsUpdate = true;
     points.rotation.y = Math.sin(time * 0.06) * 0.014 + input.mouse.x * 0.018;
     points.rotation.x = Math.cos(time * 0.05) * 0.01 + input.mouse.y * 0.014;
-    points.material.size = (size.width < 640 ? 0.038 : size.width < DESKTOP_BREAKPOINT ? 0.044 : 0.054) + centerMix * 0.012 + explosion * 0.018;
+    points.material.size = (size.width < 640 ? 0.038 : size.width < DESKTOP_BREAKPOINT ? 0.044 : 0.054) + transitionMix * 0.008 + explosion * 0.018;
     points.material.opacity = 1;
   });
 

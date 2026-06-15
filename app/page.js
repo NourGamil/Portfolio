@@ -342,7 +342,7 @@ function SingularityHoldTrigger() {
       onPointerDown={hold}
       onPointerUp={release}
       onPointerCancel={release}
-      className="singularity-trigger group fixed right-1/2 top-[34vh] z-[80] h-40 w-40 -translate-y-1/2 translate-x-1/2 cursor-grab select-none touch-none rounded-full bg-transparent sm:h-48 sm:w-48 lg:right-[500px] lg:top-1/2 lg:h-56 lg:w-56 active:cursor-grabbing"
+      className="singularity-trigger group fixed left-1/2 top-1/2 z-[80] block h-36 w-36 -translate-x-1/2 -translate-y-1/2 cursor-grab select-none touch-none rounded-full bg-transparent sm:h-44 sm:w-44 lg:h-56 lg:w-56 active:cursor-grabbing"
     >
       <span className="absolute bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-[color:var(--theme-border)] [background:var(--theme-panel-bg-strong)] px-4 py-2 text-[9px] font-black uppercase tracking-[0.28em] text-white shadow-[var(--theme-button-shadow)] backdrop-blur-md transition duration-300 group-hover:-translate-y-1 group-hover:border-[color:var(--theme-accent)]">
         Click and Hold

@@ -1,27 +1,14 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { sectionThemes } from "../data/sectionThemes";
+import { useEffect, useState } from "react";
 
-const MINIMUM_LOADER_TIME = 2600;
+const MINIMUM_LOADER_TIME = 2100;
 
 export default function Preloader() {
   const [progress, setProgress] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
-
-  const orbitDots = useMemo(() => {
-    const palette = sectionThemes.map((theme) => theme.accent);
-    return Array.from({ length: 24 }, (_, index) => ({
-      id: index,
-      color: palette[index % palette.length],
-      delay: `${index * -0.14}s`,
-      size: `${5 + (index % 4) * 1.5}px`,
-      orbitRadius: `clamp(${70 + (index % 7) * 9}px, ${9 + (index % 7) * 1.5}vw, ${118 + (index % 7) * 16}px)`,
-      orbitDepth: `${(index % 5) * 10}px`,
-    }));
-  }, []);
 
   useEffect(() => {
     const startedAt = performance.now();
@@ -42,13 +29,13 @@ export default function Preloader() {
 
         exitTimer = window.setTimeout(() => {
           setIsExiting(true);
-        }, 650);
+        }, 520);
 
         hideTimer = window.setTimeout(() => {
           document.body.classList.remove("loader-lock");
           window.dispatchEvent(new CustomEvent("portfolio-loader-complete"));
           setIsHidden(true);
-        }, 1650);
+        }, 1350);
       }, waitTime);
     };
 
@@ -65,13 +52,13 @@ export default function Preloader() {
 
     const progressTimer = window.setInterval(() => {
       setProgress((current) => {
-        if (loadReached) return Math.min(99, current + 3.8);
-        if (current < 40) return current + 2.9;
-        if (current < 72) return current + 1.35;
-        if (current < 92) return current + 0.42;
+        if (loadReached) return Math.min(99, current + 4.2);
+        if (current < 42) return current + 3.1;
+        if (current < 76) return current + 1.45;
+        if (current < 94) return current + 0.5;
         return current;
       });
-    }, 95);
+    }, 90);
 
     return () => {
       window.removeEventListener("load", handleLoad);
@@ -89,63 +76,46 @@ export default function Preloader() {
 
   return (
     <div
-      className={`portfolio-loader fixed inset-0 z-[99999] overflow-hidden bg-[#01040b] text-white transition-[opacity,transform,filter] duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-        isExiting ? "pointer-events-none scale-[1.045] opacity-0 blur-xl" : "opacity-100"
+      className={`cinematic-loader fixed inset-0 z-[99999] overflow-hidden text-white transition-[opacity,transform,filter] duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        isExiting ? "pointer-events-none scale-[1.035] opacity-0 blur-lg" : "opacity-100"
       }`}
       role="status"
       aria-live="polite"
       aria-label={isLoaded ? "Portfolio loaded" : "Loading portfolio"}
     >
-      <div className="loader-atmosphere absolute inset-0" />
-      <div className="loader-star-noise absolute inset-0" />
-      <div className="loader-vignette absolute inset-0" />
+      <div className="cinematic-loader-bg absolute inset-0" />
+      <div className="cinematic-loader-stars absolute inset-0" />
+      <div className="cinematic-loader-vignette absolute inset-0" />
 
       <div className="relative z-10 flex h-full min-h-[100dvh] flex-col items-center justify-center px-6 text-center">
-        <div className="loader-singularity relative mb-8 grid h-[clamp(16rem,42vw,31rem)] w-[clamp(16rem,42vw,31rem)] place-items-center sm:mb-10">
-          <div className="loader-disk loader-disk-one absolute" />
-          <div className="loader-disk loader-disk-two absolute" />
-          <div className="loader-lens absolute" />
-          <div className="loader-event-horizon relative z-10 grid place-items-center">
-            <div className="loader-core-pulse absolute" />
-            <div className="loader-core relative" />
-          </div>
-
-          {orbitDots.map((dot) => (
-            <span
-              key={dot.id}
-              className="loader-orbit-dot absolute rounded-full"
-              style={{
-                "--dot-index": dot.id,
-                "--dot-color": dot.color,
-                "--dot-delay": dot.delay,
-                "--orbit-radius": dot.orbitRadius,
-                "--dot-depth": dot.orbitDepth,
-                width: dot.size,
-                height: dot.size,
-              }}
-            />
-          ))}
+        <div className="cinematic-loader-object relative grid h-[clamp(14rem,34vw,25rem)] w-[clamp(14rem,34vw,25rem)] place-items-center">
+          <div className="cinematic-loader-haze absolute" />
+          <div className="cinematic-loader-disk cinematic-loader-disk-back absolute" />
+          <div className="cinematic-loader-hole absolute" />
+          <div className="cinematic-loader-disk cinematic-loader-disk-front absolute" />
+          <div className="cinematic-loader-light cinematic-loader-light-one absolute" />
+          <div className="cinematic-loader-light cinematic-loader-light-two absolute" />
         </div>
 
-        <div className="w-full max-w-[34rem]">
-          <p className="mb-3 font-mono text-[10px] font-black uppercase tracking-[0.55em] text-[color:var(--theme-accent)] sm:text-xs">
-            {isLoaded ? "Loaded" : "Initializing singularity"}
+        <div className="mt-8 w-full max-w-[34rem] sm:mt-10">
+          <p className="mb-3 font-mono text-[10px] font-black uppercase tracking-[0.55em] text-[#7dd3fc] sm:text-xs">
+            {isLoaded ? "Experience Ready" : "Loading Experience"}
           </p>
-          <h1 className="text-[clamp(2.5rem,10vw,6.5rem)] font-black uppercase leading-[0.82] tracking-[-0.09em] text-white drop-shadow-[0_0_40px_rgba(255,255,255,0.35)]">
+          <h1 className="text-[clamp(2.6rem,9vw,6.3rem)] font-black uppercase leading-[0.82] tracking-[-0.09em] text-white drop-shadow-[0_0_40px_rgba(125,211,252,0.24)]">
             Nour Gamil
           </h1>
-          <p className="mx-auto mt-4 max-w-md text-sm font-semibold leading-6 text-white/85 sm:text-base">
-            {isLoaded ? "Portfolio loaded. Releasing the scene." : "Pulling particles, titles, and motion systems into orbit."}
+          <p className="mx-auto mt-4 max-w-md text-sm font-semibold leading-6 text-white/75 sm:text-base">
+            {isLoaded ? "Opening the scene." : "Preparing the interactive black hole."}
           </p>
 
-          <div className="mt-7 overflow-hidden rounded-full border border-white/15 [background:rgba(255,255,255,0.08)] p-1 shadow-[0_0_45px_color-mix(in_srgb,var(--theme-accent)_20%,transparent)] backdrop-blur-md sm:mt-9">
+          <div className="mt-7 overflow-hidden rounded-full border border-white/15 bg-white/[0.065] p-1 shadow-[0_0_45px_rgba(125,211,252,0.18)] backdrop-blur-md sm:mt-8">
             <div
-              className="h-2.5 rounded-full [background:var(--theme-gradient)] transition-[width] duration-300 ease-out shadow-[0_0_24px_color-mix(in_srgb,var(--theme-accent)_55%,transparent)]"
+              className="h-2 rounded-full bg-gradient-to-r from-[#7dd3fc] via-white to-[#fdc700] transition-[width] duration-300 ease-out shadow-[0_0_24px_rgba(125,211,252,0.6)]"
               style={{ width: `${progressValue}%` }}
             />
           </div>
 
-          <div className="mt-4 flex items-center justify-between font-mono text-[10px] font-black uppercase tracking-[0.28em] text-white/65 sm:text-xs">
+          <div className="mt-4 flex items-center justify-between font-mono text-[10px] font-black uppercase tracking-[0.28em] text-white/55 sm:text-xs">
             <span>{isLoaded ? "Ready" : "Loading"}</span>
             <span>{progressValue}%</span>
           </div>

@@ -83,7 +83,7 @@ export default function Home() {
     <main ref={containerRef} className="relative z-10 overflow-hidden">
       <SingularityHoldTrigger />
       <section id="home" data-nav-section="home" data-snap-section className="relative isolate h-[100dvh] w-full overflow-hidden px-[8vw] max-sm:px-5">
-        <div className="absolute inset-x-5 top-[57%] max-w-[92vw] -translate-y-1/2 sm:top-[58%] md:max-w-3xl lg:inset-x-[8vw] lg:top-[56%] lg:max-w-4xl">
+        <div className="absolute inset-x-5 top-[clamp(5.25rem,15dvh,7rem)] max-w-[92vw] sm:top-[clamp(5.5rem,14dvh,7.25rem)] md:top-[clamp(6rem,13dvh,8rem)] md:max-w-3xl lg:inset-x-[8vw] lg:top-[56%] lg:max-w-4xl lg:-translate-y-1/2">
           <h1 className="flex flex-col text-[clamp(3rem,14vw,5rem)] font-black leading-[0.9] tracking-tighter text-white drop-shadow-[0_22px_70px_rgba(255,255,255,0.18)] sm:text-6xl md:text-7xl lg:text-8xl">
  <span className="relative inline-block ">Nour Gamil</span>
  <span className="relative inline-block bg-clip-text text-transparent [background-image:var(--theme-gradient)] drop-shadow-[0_0_38px_color-mix(in_srgb,var(--theme-accent)_36%,transparent)]">
@@ -91,7 +91,7 @@ export default function Home() {
             </span>
           </h1>
 
- <p className="relative mt-4 max-w-[18rem] text-sm font-semibold leading-relaxed text-white drop-shadow-[0_8px_30px_rgba(0,0,0,0.45)] sm:max-w-md sm:text-base md:mt-7 md:text-lg">
+ <p className="relative mt-4 max-w-[18rem] text-sm font-semibold leading-relaxed text-white drop-shadow-[0_8px_30px_rgba(0,0,0,0.45)] sm:max-w-md sm:text-base md:mt-6 md:text-lg lg:mt-7">
             I make creative magic using
             <span className="font-black text-[#0070F3]"> Next.js, </span>
             <span className="font-black text-[#0ae448]">GSAP, </span>
@@ -99,11 +99,19 @@ export default function Home() {
             and <span className="font-black text-[#00bcff]">Tailwind.</span>
           </p>
 
- <div className="relative mt-5 md:mt-10">
+ <div className="relative mt-5 hidden lg:block lg:mt-10">
             <div onClick={scrollToProjects} className="magnetic-wrap inline-block cursor-pointer p-1 sm:p-2 md:p-10 md:-ml-10">
               <div className="cv-btn rounded-full border-2 border-[color:var(--theme-accent)] px-6 py-3 text-sm font-bold uppercase text-[color:var(--theme-accent)] transition-colors duration-300 hover:bg-[#004973] hover:text-white sm:px-8 sm:py-4 sm:text-lg md:px-12 md:py-6 md:text-xl">
                 Explore the Magic
               </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="absolute bottom-[10vh] left-1/2 z-20 -translate-x-1/2 lg:hidden">
+          <div onClick={scrollToProjects} className="magnetic-wrap inline-block cursor-pointer p-1 sm:p-2">
+            <div className="cv-btn whitespace-nowrap rounded-full border-2 border-[color:var(--theme-accent)] px-7 py-3.5 text-sm font-bold uppercase text-[color:var(--theme-accent)] transition-colors duration-300 hover:bg-[#004973] hover:text-white sm:px-9 sm:py-4 sm:text-base md:px-12 md:py-5 md:text-lg">
+              Explore the Magic
             </div>
           </div>
         </div>
